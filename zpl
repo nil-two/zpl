@@ -28,53 +28,48 @@ sub print_error_and_abort {
     exit 1;
 }
 
-sub read_lines_by_argf_index_from_argf {
-    my $lines_by_argf_index = [[]];
+sub read_lines_by_line_index_from_argf {
+    my ($separator) = @_;
+    my $lines_by_line_index = [[]];
     my $last_argv           = "";
     my $last_argf_i         = -1;
+    my $last_line_i         = -1;
     while (my $line = <>) {
         chomp $line;
         if ($ARGV ne $last_argv) {
             $last_argv = $ARGV;
             $last_argf_i++;
-            $lines_by_argf_index->[$last_argf_i] = [];
+            $last_line_i = -1;
         }
-        push @{$lines_by_argf_index->[$last_argf_i]}, $line;
+        if (defined($separator) && $line eq $separator) {
+            $last_argf_i++;
+            $last_line_i = -1;
+            next;
+        }
+        $last_line_i++;
+        if (!defined($lines_by_line_index->[$last_line_i])) {
+            $lines_by_line_index->[$last_line_i] = [];
+        }
+        $lines_by_line_index->[$last_line_i][$last_argf_i] = $line;
     }
-    return $lines_by_argf_index;
+    return $lines_by_line_index;
 }
 
-sub zip_lines_by_line_index {
-    my ($lines_by_argf_index, $separator) = @_;
-    my $lines_by_line_index = [[]];
-    my $last_line_i         = 0;
-    my $last_argf_i         = 0;
-    for my $lines (@$lines_by_argf_index) {
-        $last_line_i = 0;
-        for my $line (@$lines) {
-            if (defined($separator) && $line eq $separator) {
-                $last_line_i = 0;
-                $last_argf_i++;
-                next;
-            }
-            if (!defined($lines_by_line_index->[$last_line_i])) {
-                $lines_by_line_index->[$last_line_i] = [];
-            }
-            $lines_by_line_index->[$last_line_i][$last_argf_i] = $line;
-            $last_line_i++;
+sub fill_lines_by_line_index_with_empty_line {
+    my ($lines_by_line_index, $separator) = @_;
+    my $max_argf_index = -1;
+    for my $lines (@$lines_by_line_index) {
+        if ($#$lines > $max_argf_index) {
+            $max_argf_index = $#$lines;
         }
-        $last_argf_i++;
     }
-
-    my $lines_by_line_index_filled_with_empty_line = $lines_by_line_index;
-    for my $lines (@$lines_by_line_index_filled_with_empty_line) {
-        for (my $line_i = 0; $line_i < $last_argf_i; $line_i++) {
-            if (!defined($lines->[$line_i])) {
-                $lines->[$line_i] = "";
+    for (my $line_i = 0; $line_i <= $#$lines_by_line_index; $line_i++) {
+        for (my $argf_i = 0; $argf_i <= $max_argf_index; $argf_i++) {
+            if (!defined($lines_by_line_index->[$line_i][$argf_i])) {
+                $lines_by_line_index->[$line_i][$argf_i] = "";
             }
         }
     }
-    return $lines_by_line_index_filled_with_empty_line;
 }
 
 sub dump_lines_by_line_index {
@@ -104,8 +99,8 @@ sub main {
     }
 
     eval {
-        my $lines_by_argf_index = read_lines_by_argf_index_from_argf();
-        my $lines_by_line_index = zip_lines_by_line_index($lines_by_argf_index, $separator);
+        my $lines_by_line_index = read_lines_by_line_index_from_argf($separator);
+        fill_lines_by_line_index_with_empty_line($lines_by_line_index);
         dump_lines_by_line_index($lines_by_line_index);
     };
     if ($@) {
