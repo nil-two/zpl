@@ -4,7 +4,7 @@ use warnings;
 use utf8;
 use Encode qw(decode_utf8);
 use File::Basename qw(basename);                                             
-use Getopt::Long qw(:config posix_default no_ignore_case gnu_compat bundling);
+use Getopt::Long qw(:config posix_default gnu_compat permute bundling no_ignore_case);
 
 use open IO => ":encoding(UTF-8)";
 binmode STDIN, ":encoding(UTF-8)";
