@@ -35,9 +35,9 @@ sub read_lines_by_argf_index_from_argf {
     while (my $line = <>) {
         chomp $line;
         if ($ARGV ne $last_argv) {
-          $last_argv = $ARGV;
-          $last_argf_i++;
-          $lines_by_argf_index->[$last_argf_i] = [];
+            $last_argv = $ARGV;
+            $last_argf_i++;
+            $lines_by_argf_index->[$last_argf_i] = [];
         }
         push @{$lines_by_argf_index->[$last_argf_i]}, $line;
     }
@@ -45,45 +45,45 @@ sub read_lines_by_argf_index_from_argf {
 }
 
 sub zip_lines_by_line_index {
-  my ($lines_by_argf_index, $separator) = @_;
-  my $lines_by_line_index = [[]];
-  my $last_line_i         = 0;
-  my $last_argf_i         = 0;
-  for my $lines (@$lines_by_argf_index) {
-    $last_line_i = 0;
-    for my $line (@$lines) {
-      if (defined($separator) && $line eq $separator) {
+    my ($lines_by_argf_index, $separator) = @_;
+    my $lines_by_line_index = [[]];
+    my $last_line_i         = 0;
+    my $last_argf_i         = 0;
+    for my $lines (@$lines_by_argf_index) {
         $last_line_i = 0;
+        for my $line (@$lines) {
+            if (defined($separator) && $line eq $separator) {
+                $last_line_i = 0;
+                $last_argf_i++;
+                next;
+            }
+            if (!defined($lines_by_line_index->[$last_line_i])) {
+                $lines_by_line_index->[$last_line_i] = [];
+            }
+            $lines_by_line_index->[$last_line_i][$last_argf_i] = $line;
+            $last_line_i++;
+        }
         $last_argf_i++;
-        next;
-      }
-      if (!defined($lines_by_line_index->[$last_line_i])) {
-        $lines_by_line_index->[$last_line_i] = [];
-      }
-      $lines_by_line_index->[$last_line_i][$last_argf_i] = $line;
-      $last_line_i++;
     }
-    $last_argf_i++;
-  }
 
-  my $lines_by_line_index_filled_with_empty_line = $lines_by_line_index;
-  for my $lines (@$lines_by_line_index_filled_with_empty_line) {
-    for (my $line_i = 0; $line_i < $last_argf_i; $line_i++) {
-      if (!defined($lines->[$line_i])) {
-        $lines->[$line_i] = "";
-      }
+    my $lines_by_line_index_filled_with_empty_line = $lines_by_line_index;
+    for my $lines (@$lines_by_line_index_filled_with_empty_line) {
+        for (my $line_i = 0; $line_i < $last_argf_i; $line_i++) {
+            if (!defined($lines->[$line_i])) {
+                $lines->[$line_i] = "";
+            }
+        }
     }
-  }
-  return $lines_by_line_index_filled_with_empty_line;
+    return $lines_by_line_index_filled_with_empty_line;
 }
 
 sub dump_lines_by_line_index {
-  my ($lines_by_line_index) = @_;
-  for my $lines (@$lines_by_line_index) {
-    for my $line (@$lines) {
-      print "$line\n";
+    my ($lines_by_line_index) = @_;
+    for my $lines (@$lines_by_line_index) {
+        for my $line (@$lines) {
+            print "$line\n";
+        }
     }
-  }
 }
 
 sub main {
