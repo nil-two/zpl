@@ -102,7 +102,7 @@ B
 Print usage and exit.
 
 ```
-$ zpl -h
+$ zpl --help
 (Print usage)
 ```
 
