@@ -46,8 +46,8 @@ $ zpl [<option(s)>] [<file(s)>]
 zip lines by the line number.
 
 options:
-  -s, --separator=<sep>  separate lines by sep in addition to files
-      --help             print usage and exit
+  -s, --separator=SEP  separate lines by SEP in addition to files
+      --help           print usage and exit
 ```
 
 Requirements
@@ -73,9 +73,9 @@ Note: In this example, `$HOME/bin` must be included in `$PATH`.
 Options
 -------
 
-### -s, --separator=\<sep\>
+### -s, --separator=SEP
 
-Separate lines by sep in addition to files.
+Separate lines by SEP in addition to files.
 There is no default value, and it does not split within a file by default.
 
 ```

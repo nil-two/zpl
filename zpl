@@ -17,8 +17,8 @@ usage: $cmd_name [<option(s)>] [<file(s)>]
 zip lines by the line number.
 
 options:
-  -s, --separator=<sep>  separate lines by sep in addition to files
-      --help             print usage and exit
+  -s, --separator=SEP  separate lines by SEP in addition to files
+      --help           print usage and exit
 EOL
 
 sub print_error_and_abort {
